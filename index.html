@@ -1,152 +1,218 @@
-﻿<!doctype html>
-<html lang="zh-Hans-CN">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="Cache-Control" content="max-age=600">
-    <meta name="viewport" content="width=device-width, initial-scale=0.1, maximum-scale=1.0, user-scalable=no"/>
-    <title>植物大战僵尸之旅行 - 浓雾弃都</title>
-	<style>
-        body{
-            overflow:hidden;
-            background:#cce8cf;
-            cursor:default;
-            user-select:none;
-            -webkit-tap-highlight-color:transparent;
-        }:
-        focus{outline: 0;}
-        #status{
-            background:url(images/interface/loading.webp) no-repeat;
-            background-position:0 0;z-index:400;display:block
-        }
-        #status,.WindowFrame{
-            height:600px;width:900px
-        }
-        .WindowFrame{
-            top:0;left:50%;margin-left:-450px;overflow:hidden;position:absolute
-        }
-        #startGame{
-            position:absolute;
-            width:204px;
-            height:71px;
-            left:348px;
-            top:509px;
-            cursor:pointer;
-            background:url(images/interface/Logo.webp) no-repeat 0 -600px;
-            transition:300ms ease-out;
-        }
-        #startGame:hover{filter:brightness(110%);}
-        #startGame:active{filter:brightness(90%);transition: initial;}
-        ul{list-style:none;margin:0;padding:0;}
-    </style>
-    <script src="js/languageChk.js"></script>
-    <script src="js/errorShower.js"></script>
-    <link href="css/ui.css" rel="stylesheet">
-</head>
-<body id="dBody">
-    <!--全屏容器-->
-    <div id="status" class="WindowFrame"></div>
-    <div id="shade" class="WindowFrame"></div>
-    <div id="shadeb" class="WindowFrame"></div>
-    <div id="loading" class="WindowFrame">
-        <img id="loadju" width='150' height='150' src="images/interface/mum.webp">
-    </div>
-    <div id="dSurface" class="WindowFrame">
-        <span class='PEntrance jngButton' id='eFuBen' onclick="oFuben.open();"></span>
-        <span class='PEntrance jngButton' id='eAdventure' onclick="SelectModal('selectionmap', 'Service')" onmouseover="loadRes({img: ['images/interface/ForestSelection1.webp', 'images/interface/ForestSelection2.webp']})"></span>
-        <span class='PEntrance jngButton' id='eWriter' onclick="SelectModal('writer', 'Service');PlayAudio('pause');" onmouseover="loadRes({img: ['images/interface/writer.webp']})"></span>
-        <span class='PEntrance jngButton' id='eSetting' onclick="ClickKuaiShe();PlayAudio('pause');"></span>
-        <span class='PEntrance jngButton' id='eNotice' onclick="Notice.open();PlayAudio('pause');"></span>
-        <span class='jngButton' id='eLab' onclick="SelectModal('Shop', 'Service');PlayAudio('pause');"></span>
-        <span class='jngButton' id='eAlmanac' onclick="oAlmanac.open();PlayAudio('pause');" onmouseover="loadRes({img: ['images/interface/lab1.webp']})"></span>
-    </div>
-    <div id="WorldMap" class="WindowFrame"></div>
-    <div id="Diary" class="WindowFrame"></div>
-    <div id="FuBen" class="WindowFrame"></div>
-    <div id="Almanac" class="WindowFrame"></div>
-    <div id="dNewPlant" class="WindowFrame"></div>
-    <div id="dNewProp" class="WindowFrame"></div>
-    <div id='SelectionMap' class='WindowFrame'></div>
-    <div id="dAll" class="WindowFrame">
-        <div id="dSVGContainers" style="display:none;"></div>
-        <div id="tGround"></div>
-        <div id='dFightingScene'>
-            <!--左侧僵尸预览-->
-            <div id="dZombie"></div>
-            <div id="dTop">
-                <div id="dSunNum">
-                    <span id="sSunNum"></span>
-                </div>
-                <div id="tdShovel">
-					<span id="quickKeyTextShovel">Q</span>
-                    <img id="imgShovel" src='images/interface/Shovel.png' width='62' height='62' onclick="ChoseShovel(event)"/>
-                 </div>
-             </div>
-            <div id="dFlagMeter">
-                <div id="sFlagMeterTitleF"></div>
-                <div id='dFlagMeterContent'>
-                    <div id='dFlagMeterBar'></div>
-                    <div id='dFlagHead'></div>
-                    <div id='dFlagBG'></div>
-                </div>
-                <p id='dGameScore'></p>
-            </div>
-            <div id="dCoinContent">
-                <span id="dnumberMoneyOfUser"></span>
-                <img id="imgCoinGoldDollar" width="35" height="34.3" src="images/Props/Coins/coin_gold_dollar.png"/>
-            </div>
-            <div id="dPZ_Spare2" class='PZ'></div>
-            <div id="dPZ_Spare1" class='PZ'></div>
-             <div id="dPZ" class='PZ'></div>
-         </div>            
-         <div id="dPropsContent">
-            <div id="dWrap"></div>
-            <span id="dUP">▲</span>
-         </div>
-         <div id="dSelectCard">
-            <div class="title"></div>
-            <div id="dPCard"></div>
-            <div class="bTitle">
-                <input class="voidButton jngButton" onclick="ResetSelectCard()" type="button" name="btnReset" id="button1" value="重置">
-                <input class="voidButton jngButton" onclick="ReadyGO()" type="button" disabled="disabled" name="btnOK" id="btnOK" value="开始">
-            </div>
-        </div>
-        <div id="dSelectProp"><div id="dWrap"></div><div id='dList'></div></div>
-        <div id="dCardList"></div>
-        <div id="ZimuRQ"><div id="Zimu"></div></div>
-    </div>
-    <div id="Writer" class="WindowFrame"></div>
-    <div id='labMap'></div>
-    <div id="dShop" class="WindowFrame"><div id='dFlexWrap_ShopItem' class="NoBar"></div></div>
-    <!--全屏容器END-->
-    <!--窗口容器-->
-    <div id="dMenu">
-        <input class="voidButton jngButton" onclick="ClickSpeed();" type="button" id="dMenu0" value="调速">
-        <input class="voidButton jngButton" onclick="oMenu.open();" type="button" id="dMenu1" value="菜单">
-    </div>
-    <div id="jngAlert"></div>
-    <div id="rules"></div>
-    <div id="LvlInfoUI"></div>
-    <div id="Menu"></div>
-    <div id="kuaisushezhi"></div>
-    <div id="dSpeedContainer"></div>
-    <div id='Notice'></div>
-    <!--窗口容器END-->
-    <script src="js/plugin.js"></script>
-    <script src="js/main.js"></script>
-    <script src="js/function.js"></script>
-    <!--植物 僵尸 子弹 js-->
-    <script src="js/plants.js"></script>
-    <script src="js/zombies.js"></script>
-    <script src="js/bullets.js"></script>
-    <!--一些便捷式ui-->
-    <script src="js/services.js"></script>
-    <script src="js/user.js"></script>
-    <script>
-        (() => {
-            "use strict";
-            oButtons.SetStaticTexts();
-            LoadModal('index', 'Service');
-        })();
-    </script>
-</body>
+<html id="htmlDom" style="overflow:hidden" lang="zh-Hans-CN">
+	<head>
+		<title>植物大战僵尸之旅行 - 浓雾弃都</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+		<style>
+			#htmlDom,
+			.textDiv {
+				background-color: #000
+			}
+
+			.textDiv {
+				cursor: pointer;
+				position: relative;
+				margin: 10px 5px 5px;
+				width: fit-content;
+				height: fit-content;
+				font-size: .8em;
+				padding: .4em;
+				border-radius: 500px;
+				opacity: .3;
+				transition: opacity .5s
+			}
+
+			#htmlDom {
+				background-repeat: no-repeat;
+				background-size: cover
+			}
+
+			.spring {
+				/* background-image: url(bg.webp); */
+			}
+		</style>
+		<link rel="shortcut icon" href="icon.webp">
+	</head>
+	<div id="mainBox" style="position:absolute;top:0;left:0;height:100%;width:100%">
+		<div id="extraDiv" style="position:absolute;top:0;left:0;height:100%;width:20%;transition:left .2s">
+			<div style="display:none;" class="textDiv" onmouseenter="this.style.opacity=1"
+				onmouseleave="this.style.opacity=0.3">
+				<a id="changeServer" style="display:none;user-select:none;color:#fff">进入测试服</a>
+			</div>
+			<div class="textDiv" onmouseenter="this.style.opacity=1" onmouseleave="this.style.opacity=0.3">
+				<a id="oled" style="user-select:none;color:#fff;display: none;">关闭背景</a>
+			</div>
+			<div class="textDiv" style="opacity: 1;">
+				<a id="fullScreen" style="user-select:none;color:#fff">全屏游戏</a>
+			</div>
+		</div>
+		<div id="theframe" style="position:absolute;top:0;left:0;width:100%">
+			<iframe id="fam" src="./spvz.html" style="position:absolute;left:1.3em;border:0;border-radius:5px"
+				height="600" width="900"></iframe>
+		</div>
+	</div>
+	<script>
+		if (location.hash.length === 0) {
+			if (screen.orientation && !/landscape/.test(screen.orientation.type)) {
+				location.href = "./none.html";
+			}
+		}
+		let lang = {
+			"sev": ["进入稳定服", "进入测试服"],
+			"JumpServer": '确定要跳转嘛？这将会重启游戏！',
+			"oled": "关闭背景",
+			"fullScreen": "全屏游戏",
+		};
+		let english = navigator.language.substring(0, 2) !== "zh";
+		if (english) {
+			document.querySelector("title").innerText = "PvZ Travel";
+			lang = {
+				"JumpServer": 'Are you sure? This will restart the game!',
+				"sev": ["Stable Server"],
+				"oled": "Close Background",
+				"fullScreen": "FullScreen"
+			};
+		}
+		document.getElementById("mainBox").style.width = (window.outerWidth - 20) + "px";
+		document.getElementById("mainBox").style.left = "20px";
+		let stype = 0,
+			focusT = 0,
+			fam = document.getElementById("fam");
+		document.getElementById("changeServer").innerText = lang["sev"][1];
+		document.getElementById("changeServer").onclick = function() {
+			if (stype == 0) {
+				if (confirm(lang["JumpServer"])) {
+					fam.src = '../tester/';
+					this.innerText = lang["sev"][0];
+					stype = 1;
+				}
+			} else {
+				if (confirm(lang["JumpServer"])) {
+					stype = 0;
+					fam.src = '../pvztr/';
+					this.innerText = lang["sev"][1];
+				}
+			}
+		};
+		document.getElementById("oled").innerText = lang["oled"];
+		document.getElementById("oled").onclick = function() {
+			if (focusT == 0) {
+				if (confirm(english ? "Double click background to open background" : '双击黑屏即可打开背景')) {
+					getColor(0);
+					focusT = 1;
+				}
+			};
+		};
+		document.getElementById("fullScreen").innerText = lang["fullScreen"];
+		document.getElementById("fullScreen").onclick = function() {
+			let dom = document.getElementById("theframe");
+			let open = true;
+			if (document.fullScreenElement || document.webkitFullscreenElement) {
+				if ((document.fullScreenElement || document.webkitFullscreenElement) == dom) {
+					open = false;
+				}
+				if (document.exitFullScreen) {
+					document.exitFullScreen();
+					screen.orientation.unlock();
+				}
+				if (document.webkitExitFullscreen) {
+					document.webkitExitFullscreen();
+					screen.orientation.unlock();
+				}
+			}
+			if (open) {
+				if (dom.requestFullscreen) {
+					let res = dom.requestFullscreen({
+						navigationUI: "hide"
+					});
+					screen.orientation.lock("landscape");
+				}
+				if (dom.webkitRequestFullscreen) {
+					let res = dom.webkitRequestFullscreen({
+						navigationUI: "hide"
+					});
+					screen.orientation.lock("landscape");
+				}
+			}
+		};
+		window.onresize = res;
+
+		function res() {
+			let bili = window.innerHeight / 600;
+			let fam = document.getElementById("fam");
+			let Tdiv = document.getElementById("theframe");
+			let doms = document.getElementsByClassName("textDiv");
+			fam.style.transform = "scale(" + bili + ")";
+			fam.style.top = "" + (-(600 - 600 * bili) / 2) + "px";
+			let posW = (window.innerWidth - 900) / 2;
+			document.getElementById("extraDiv").style.left = "0";
+			(function() {
+				let div = document.getElementById("extraDiv");
+				div.style.left = "";
+				div.onclick = () => {};
+				div.style.zIndex = "";
+				for (let i = 0; i < doms.length; i++) {
+					doms[i].style.display = "";
+					doms[i].style.pointerEvents = "";
+					console.log(233);
+				}
+			})();
+			if (620 / 320 <= window.innerWidth / window.innerHeight) {
+				if (window.innerWidth - 900 * bili - (document.getElementById("changeServer").offsetWidth + 30) * 2 <= 0) {
+					posW = (window.innerWidth - 900 + (document.getElementById("changeServer").offsetWidth + 24)) / 2;
+				}
+			} else if (540 / 320 <= window.innerWidth / window.innerHeight) {
+				posW = (window.innerWidth - 950) / 2;
+				let div = document.getElementById("extraDiv");
+				div.style.left = "-10%";
+				console.log(div.childNodes);
+				div.onclick = (e) => {
+					if (Number.parseInt(div.style.left) != "0") {
+						div.style.left = "0";
+						div.style.zIndex = "300";
+						for (let i = 0; i < doms.length; i++) {
+							doms[i].style.pointerEvents = "";
+						}
+					} else {
+						div.style.left = "-10%";
+						div.style.zIndex = "";
+						for (let i = 0; i < doms.length; i++) {
+							doms[i].style.pointerEvents = "none";
+						}
+					}
+				};
+				for (let i = 0; i < doms.length; i++) {
+					doms[i].style.pointerEvents = "none";
+				}
+			} else {
+				posW = (window.innerWidth - 940) / 2;
+				for (let i = 0; i < doms.length; i++) {
+					doms[i].style.display = "none";
+				}
+			}
+			fam.style.left = "" + posW + "px";
+		}
+
+		function getColor(type = 1) {
+			let mon = new Date().getMonth() + 1;
+			let html = document.getElementById("htmlDom");
+			let textButton = document.getElementById("extraDiv");
+			if (type == 0) {
+				html.className = "";
+				textButton.style.display = "none";
+				setTimeout(function() {
+					html.ondblclick = function() {
+						getColor();
+						focusT = 0;
+						html.ondblclick = null;
+					}
+				}, 3000);
+				return;
+			}
+			textButton.style.display = "";
+			html.className = "spring";
+		}
+		getColor();
+		res()
+	</script>
 </html>
