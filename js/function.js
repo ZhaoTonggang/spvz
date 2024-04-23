@@ -5007,7 +5007,7 @@ var asyncInnerHTML = function(HTML, callBack, arg) {
 			});
 		},
 
-		ScreenShake(n = 4) {
+		ScreenShake(n = 10) {
 			//屏幕震动特效，n表示振动幅度（px）
 			SetStyle(EDAll, {
 				marginLeft: -450 + n + "px"
@@ -5015,10 +5015,10 @@ var asyncInnerHTML = function(HTML, callBack, arg) {
 			setTimeout(_ => {
 				SetStyle(EDAll, {
 					marginLeft: '-450px',
-					top: -n + "px"
+					marginTop: -300 + n + "px"
 				});
 				setTimeout(_ => SetStyle(EDAll, {
-					top: 0
+					marginTop: '-300px'
 				}), 20);
 			}, 20);
 		},
